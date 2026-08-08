@@ -1,125 +1,197 @@
 // ============================================================
 // الملف: frontend/app.js
-// الدور: التحكم في منطق التطبيق والتفاعل مع العقود الذكية
+// الدور: التحكم في منطق التطبيق والتواصل مع الخادم الخلفي
 // ============================================================
 
+const API_BASE_URL = 'http://localhost:5000/api'; // عنوان الخادم الخلفي
+
 // ============================================================
-// إدارة المزادات
+// دوال المزادات
 // ============================================================
 
 /**
  * إنشاء مزاد جديد
  */
-async function createAuction(sellerAddress, description, startingPrice, gcvValue, piPercent, yerPercent, deadline) {
-    // استدعاء عقد auction_contract.rs
-    console.log('إنشاء مزاد جديد...');
-    // const contract = await getAuctionContract();
-    // const result = await contract.create_auction(...);
-    // return result;
-    alert('تم إنشاء المزاد (محاكاة)');
+async function createAuction(seller, description, startingPrice, gcvValue, piPercent, yerPercent, deadline) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/auction/create`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ seller, description, startingPrice, gcvValue, piPercent, yerPercent, deadline })
+        });
+        const data = await response.json();
+        console.log('تم إنشاء المزاد:', data);
+        alert(`تم إنشاء المزاد برقم: ${data.auctionId}`);
+        return data;
+    } catch (error) {
+        console.error('خطأ في إنشاء المزاد:', error);
+        alert('فشل في إنشاء المزاد');
+    }
 }
 
 /**
  * تقديم عرض في مزاد
  */
-async function placeBid(auctionId, bidderAddress, amount) {
-    // استدعاء عقد auction_contract.rs
-    console.log(`تقديم عرض بقيمة ${amount} للمزاد ${auctionId}`);
-    alert(`تم تقديم العرض (محاكاة)`);
+async function placeBid(auctionId, bidder, amount) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/auction/bid`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ auctionId, bidder, amount })
+        });
+        const data = await response.json();
+        console.log('تم تقديم العرض:', data);
+        alert(`تم تقديم العرض بقيمة ${amount}`);
+        return data;
+    } catch (error) {
+        console.error('خطأ في تقديم العرض:', error);
+        alert('فشل في تقديم العرض');
+    }
 }
 
 /**
  * ترسية المزاد
  */
 async function finalizeAuction(auctionId) {
-    // استدعاء عقد auction_contract.rs
-    console.log(`ترسية المزاد ${auctionId}`);
-    alert(`تم ترسية المزاد (محاكاة)`);
+    try {
+        const response = await fetch(`${API_BASE_URL}/auction/finalize`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ auctionId })
+        });
+        const data = await response.json();
+        console.log('تم ترسية المزاد:', data);
+        alert(`تم ترسية المزاد ${auctionId}`);
+        return data;
+    } catch (error) {
+        console.error('خطأ في ترسية المزاد:', error);
+        alert('فشل في ترسية المزاد');
+    }
 }
 
 // ============================================================
-// إدارة الدفع الهجين
+// دوال الدفع الهجين
 // ============================================================
 
 /**
  * تنفيذ الدفع الهجين (Pi + YER)
  */
-async function settlePayment(buyer, seller, total, piAmount, yerAmount, auctionId) {
-    // استدعاء عقد hybrid_payment_contract.rs
-    console.log(`دفع ${piAmount} Pi و ${yerAmount} YER للمزاد ${auctionId}`);
-    alert(`تم تنفيذ الدفع الهجين (محاكاة)`);
+async function settlePayment(buyer, seller, totalAmount, piAmount, yerAmount, auctionId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/payment/settle`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ buyer, seller, totalAmount, piAmount, yerAmount, auctionId })
+        });
+        const data = await response.json();
+        console.log('تم تنفيذ الدفع الهجين:', data);
+        alert(`تم تنفيذ الدفع الهجين للمزاد ${auctionId}`);
+        return data;
+    } catch (error) {
+        console.error('خطأ في تنفيذ الدفع الهجين:', error);
+        alert('فشل في تنفيذ الدفع الهجين');
+    }
 }
 
 // ============================================================
-// إدارة التتبع
+// دوال التتبع
 // ============================================================
 
 /**
  * إنشاء سجل تتبع للشحنة
  */
 async function createTracking(auctionId, buyer, seller, destination) {
-    // استدعاء عقد tracking_contract.rs
-    console.log(`إنشاء تتبع للشحنة للمزاد ${auctionId}`);
-    alert(`تم إنشاء سجل التتبع (محاكاة)`);
+    try {
+        const response = await fetch(`${API_BASE_URL}/tracking/create`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ auctionId, buyer, seller, destination })
+        });
+        const data = await response.json();
+        console.log('تم إنشاء سجل التتبع:', data);
+        alert(`تم إنشاء سجل التتبع برقم: ${data.trackingId}`);
+        return data;
+    } catch (error) {
+        console.error('خطأ في إنشاء سجل التتبع:', error);
+        alert('فشل في إنشاء سجل التتبع');
+    }
 }
 
 /**
- * إضافة نقطة تتبع جديدة (مندوب شحن، جمارك)
+ * إضافة نقطة تتبع جديدة
  */
-async function addTrackingPoint(trackingId, location, status, lat, lng, actor) {
-    // استدعاء عقد tracking_contract.rs
-    console.log(`إضافة نقطة تتبع: ${status} في ${location}`);
-    alert(`تم إضافة نقطة تتبع (محاكاة)`);
+async function addTrackingPoint(trackingId, location, status, latitude, longitude, actor) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/tracking/add-point`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ trackingId, location, status, latitude, longitude, actor })
+        });
+        const data = await response.json();
+        console.log('تم إضافة نقطة تتبع:', data);
+        alert(`تم إضافة نقطة تتبع للشحنة ${trackingId}`);
+        return data;
+    } catch (error) {
+        console.error('خطأ في إضافة نقطة تتبع:', error);
+        alert('فشل في إضافة نقطة تتبع');
+    }
+}
+
+/**
+ * الحصول على معلومات التتبع
+ */
+async function getTrackingInfo(trackingId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/tracking/${trackingId}`);
+        const data = await response.json();
+        console.log('معلومات التتبع:', data);
+        return data;
+    } catch (error) {
+        console.error('خطأ في الحصول على معلومات التتبع:', error);
+        alert('فشل في الحصول على معلومات التتبع');
+    }
 }
 
 // ============================================================
-// إدارة KYB (ربط الكيانات التجارية)
+// دوال KYB
 // ============================================================
 
 /**
- * تسجيل كيان تجاري جديد (مورد، شركة شحن، جمارك)
+ * تسجيل كيان تجاري جديد
  */
-async function registerEntity(entityName, entityType, piWallet, docsHash, adminWallet) {
-    // استدعاء عقد kyb_contract.rs
-    console.log(`تسجيل كيان ${entityType}: ${entityName}`);
-    alert(`تم تسجيل الكيان التجاري (محاكاة)`);
+async function registerEntity(entityName, entityType, piWallet, documentsHash, adminWallet) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/kyb/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ entityName, entityType, piWallet, documentsHash, adminWallet })
+        });
+        const data = await response.json();
+        console.log('تم تسجيل الكيان التجاري:', data);
+        alert(`تم تسجيل الكيان التجاري برقم: ${data.entityId}`);
+        return data;
+    } catch (error) {
+        console.error('خطأ في تسجيل الكيان التجاري:', error);
+        alert('فشل في تسجيل الكيان التجاري');
+    }
 }
 
 /**
  * منح صلاحية لمستخدم ضمن كيان تجاري
  */
 async function grantRole(entityId, userPiWallet, role, granterPiWallet) {
-    // استدعاء عقد kyb_contract.rs
-    console.log(`منح دور ${role} للمستخدم ${userPiWallet}`);
-    alert(`تم منح الصلاحية (محاكاة)`);
-}
-
-// ============================================================
-// دوال مساعدة للواجهة
-// ============================================================
-
-/**
- * الحصول على حالة KYB لمستخدم
- */
-async function getKYBStatus(piWallet) {
-    // استدعاء عقد kyb_contract.rs
-    console.log(`التحقق من حالة KYB للمستخدم ${piWallet}`);
-    return { status: 'VERIFIED', entity: 'شركة اليمن للتجارة' };
-}
-
-/**
- * الحصول على معلومات شحنة
- */
-async function getTrackingInfo(trackingId) {
-    // استدعاء عقد tracking_contract.rs
-    console.log(`الحصول على معلومات التتبع للشحنة ${trackingId}`);
-    return {
-        status: 'IN_TRANSIT',
-        currentLocation: 'ميناء عدن',
-        destination: 'صنعاء',
-        points: [
-            { location: 'ميناء عدن', status: 'مغادرة', lat: 12.8, lng: 44.9 },
-            { location: 'نقطة تفتيش', status: 'تفتيش جمركي', lat: 13.2, lng: 45.5 }
-        ]
-    };
+    try {
+        const response = await fetch(`${API_BASE_URL}/kyb/grant-role`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ entityId, userPiWallet, role, granterPiWallet })
+        });
+        const data = await response.json();
+        console.log('تم منح الصلاحية:', data);
+        alert(`تم منح دور ${role} للمستخدم`);
+        return data;
+    } catch (error) {
+        console.error('خطأ في منح الصلاحية:', error);
+        alert('فشل في منح الصلاحية');
+    }
 }
