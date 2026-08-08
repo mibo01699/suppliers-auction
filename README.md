@@ -21,3 +21,13 @@ The project includes two frontend prototypes to demonstrate core functionalities
 
 ### How to Run the Frontend
 Simply open the `index.html` or `tracking.html` files in your browser to explore the user interface and tracking features.
+
+## 🔧 Backend Server
+
+The backend server provides RESTful APIs for the application. It acts as a middleware between the frontend and the Pi Network smart contracts.
+
+### Setup and Run
+
+1. Navigate to the `backend/` folder:
+   ```bash
+   cd backend
