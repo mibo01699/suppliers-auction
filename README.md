@@ -31,3 +31,36 @@ The backend server provides RESTful APIs for the application. It acts as a middl
 1. Navigate to the `backend/` folder:
    ```bash
    cd backend
+
+
+npm install
+
+npm start
+
+The server will run on http://localhost:5000.
+
+Available APIs
+
+· Auction:
+  · POST /api/auction/create – Create a new auction.
+  · POST /api/auction/bid – Place a bid.
+  · POST /api/auction/finalize – Finalize an auction.
+· Payment:
+  · POST /api/payment/settle – Execute hybrid settlement (Pi + YER).
+· Tracking:
+  · POST /api/tracking/create – Create a new tracking record.
+  · POST /api/tracking/add-point – Add a tracking point.
+  · GET /api/tracking/:id – Get tracking information.
+· KYB:
+  · POST /api/kyb/register – Register a business entity.
+  · POST /api/kyb/grant-role – Grant a role to a user.
+
+```
+
+## ✅ خلاصة الخطوات المنفذة
+
+1.  **تم إنشاء خادم خلفي (Backend) كامل** مع واجهات برمجة تطبيقات (APIs) تغطي جميع وظائف التطبيق (المزادات، الدفع، التتبع، KYB).
+2.  **تم توثيق كيفية تشغيل الخادم** واستخدام الـ APIs في ملف `README.md`.
+3.  **الأساس جاهز الآن** لربط الـ APIs فعلياً بالعقود الذكية على بلوكشين Pi (سيتم استبدال دوال المحاكاة باستدعاءات حقيقية لـ Pi SDK و Soroban).
+
+**الآن، أصبح لديك تطبيق متكامل من الناحية الهيكلية: عقود ذكية، واجهة أمامية، وخادم خلفي.** 🚀
