@@ -99,3 +99,27 @@ If needed, you can set environment variables in Replit's **"Secrets"** section. 
 ### Next Steps
 
 After deployment on Replit, the application can be integrated with **Pi SDK** via the **Pi App Studio** to enable real blockchain interactions.
+
+## 💱 تكامل الدفع الهجين مع BIGISH-YER
+
+يعتمد تطبيق المزادات على نظام الدفع الهجين (Pi + YER) عبر التكامل مع خادم `BIGISH-YER`.
+
+### كيفية التشغيل
+
+1. تأكد من تشغيل خادم `BIGISH-YER` أولاً.
+2. قم بتعيين متغير البيئة `BIGISH_YER_API` ليشير إلى عنوان خادم `BIGISH-YER`.
+3. قم بتشغيل خادم المزادات.
+4. استخدم واجهة برمجة التطبيقات (API) `/api/payment/settle` لتنفيذ الدفع الهجين، مع توفير معرفات محافظ YER للمشتري والبائع.
+
+### مثال على طلب الدفع
+
+```json
+POST /api/payment/settle
+{
+  "auctionId": "auc_123",
+  "buyerPiWallet": "GABC...",
+  "sellerPiWallet": "GXYZ...",
+  "buyerYerWalletId": "YER-...",
+  "sellerYerWalletId": "YER-...",
+  "totalAmount": 100
+}
