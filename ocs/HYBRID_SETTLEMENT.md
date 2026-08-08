@@ -10,6 +10,27 @@ In the Global Auction Protocol, a single winning bid triggers an **atomic transa
 1.  **Auction Finalization:** The smart contract (`Auction.sol`) confirms the winning bid and the agreed price.
 2.  **Split Calculation:** The contract calculates the exact amounts for Pi (based on GCV) and YER, according to the buyer's predefined split ratio.
 3.  **Dual-Trigger Execution:**
+
+
+## 🔗 Technical Integration with Pi Network
+
+The atomic split settlement is executed through a multi-step process:
+
+1.  **Pre-Auction Verification:**
+    *   Buyer and Supplier are authenticated via **Pi SDK** before creating or bidding.
+    *   The smart contract verifies the buyer's Pi wallet address (via a trusted oracle) to ensure they hold the necessary Pi for the escrow or settlement.
+
+2.  **Auction Finalization:**
+    *   The `Auction.sol` contract calculates `piAmount` based on the GCV and the agreed split.
+
+3.  **Triggering the Pi Transfer:**
+    *   The contract emits a specific event (`PiSettlementRequested`).
+    *   A Keeper/Bot (off-chain) monitors these events.
+    *   Using a secure bridge/relay (e.g., LayerZero or a custom Pi-EVM bridge), the Keeper initiates the Pi transfer via the **Pi Network SDK**, sending the Pi from the Buyer’s Pi wallet to the Supplier’s Pi wallet.
+
+4.  **Final Atomic Step:**
+    *   The YER transfer is executed directly on the EVM chain.
+    *   A final event (`AuctionSettled`) is emitted only after both the Pi and YER transfers are confirmed.
     *   **Pi Payment:** The contract initiates a payment request via the **Pi Network SDK** (using cross-chain messaging or an oracle) to transfer the Pi amount from the buyer's Pi wallet to the supplier's Pi wallet.
     *   **YER Payment:** Simultaneously, the contract calls the `BIGISH-YER` system's smart contract to transfer the YER amount from the buyer's YER wallet to the supplier's YER wallet.
 4.  **Settlement Confirmation:** The auction is marked as complete only upon confirmation of both transfers.
