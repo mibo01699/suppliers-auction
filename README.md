@@ -64,3 +64,38 @@ Available APIs
 3.  **الأساس جاهز الآن** لربط الـ APIs فعلياً بالعقود الذكية على بلوكشين Pi (سيتم استبدال دوال المحاكاة باستدعاءات حقيقية لـ Pi SDK و Soroban).
 
 **الآن، أصبح لديك تطبيق متكامل من الناحية الهيكلية: عقود ذكية، واجهة أمامية، وخادم خلفي.** 🚀
+
+## 🚀 Deployment on Replit
+
+This project is designed to be easily deployed and run on **Replit** (https://replit.com). Follow these steps:
+
+### How to Deploy
+
+1. **Create a new Repl:**
+   - Log in to your Replit account.
+   - Click on the **"Create Repl"** button.
+   - Choose **"Import from GitHub"**.
+   - Paste the URL of this repository: `https://github.com/mibo01699/suppliers-auction`.
+   - Click **"Import"**.
+
+2. **Run the application:**
+   - After the import completes, Replit will automatically detect the configuration.
+   - Click the **"Run"** button at the top.
+
+3. **Access the application:**
+   - Once the server starts, Replit will provide a webview or a URL to access the application.
+   - The backend API will be available at the provided URL (e.g., `https://suppliers-auction.YOUR_USERNAME.repl.co`).
+
+### Environment Variables
+
+If needed, you can set environment variables in Replit's **"Secrets"** section. For this project, the default port (5000) is used.
+
+### How It Works
+
+- **Frontend:** The `frontend/index.html` and `frontend/tracking.html` files are served as static pages.
+- **Backend:** The `backend/server.js` file is the main server that handles API requests.
+- **Smart Contracts:** The Rust contracts in the `contracts/` folder are for reference and future deployment on Pi Network.
+
+### Next Steps
+
+After deployment on Replit, the application can be integrated with **Pi SDK** via the **Pi App Studio** to enable real blockchain interactions.
