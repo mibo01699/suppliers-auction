@@ -10,6 +10,15 @@ This protocol is not just an auction platform; it is a **value-discovery and set
 *   **Auction Mechanism:** Smart contracts facilitate transparent, tamper-proof bidding between suppliers and buyers.
 *   **Hybrid Settlement (The Core Innovation):**
     *   **Pi Network Integration:** A customizable percentage of each successful bid is settled in **Pi Coin**, pegged to a mutually agreed **Global Consensus Value (GCV)** at the time of the auction.
+
+## How It Works (The Atomic Split)
+1.  **Auction Creation:** Buyer creates an auction, defining the **Pi/YER split ratio** and the **GCV** for Pi settlement.
+2.  **Bidding:** Suppliers place bids.
+3.  **Winner Selection:** Smart contract selects the winning bid.
+4.  **Atomic Hybrid Settlement:** The contract automatically:
+    *   Calculates the Pi amount (based on GCV) and YER amount.
+    *   Initiates a **simultaneous, two-way transfer**: Pi from the buyer's Pi wallet to the supplier's Pi wallet, and YER from the buyer's YER wallet to the supplier's YER wallet (via `BIGISH-YER`).
+    *   The auction is finalized only when both transfers are confirmed.
     *   **YER Token Integration:** The remaining percentage is settled via the **YER token** (from the `BIGISH-YER` stablecoin system), providing price stability and local economic utility.
 *   **Goal:** The platform serves as a real-world oracle to **establish and validate GCV**, creating a transparent, market-driven record of Pi's value in international trade.
 
