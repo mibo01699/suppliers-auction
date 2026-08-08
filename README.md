@@ -6,7 +6,18 @@ This protocol is architected for a **dual-chain settlement layer**, combining th
 *   **Settlement Layer (Hybrid Engine):** The atomic split payment logic is designed to trigger two parallel settlement paths:
     1.  **Pi Network Settlement:** Interfaces with the **Pi Network SDK** (via a secure bridge or oracle) to execute the Pi coin transfer based on the GCV.
     2.  **YER Token Settlement:** Directly interacts with the `BIGISH-YER` smart contract to execute the YER token transfer on the EVM chain.
-*   **Compliance with Pi Core Team Mandates:** The protocol's design adheres to the Pi Network's core principles:
+*   **Compliance with Pi Core Team Mandates:** The protocol's design adheres to the Pi Network's core
+ principles:
     *   **KYC-Enforced Participation:** Access to the auction platform for both buyers and suppliers is strictly gated through **Pi SDK Authentication**, ensuring only verified Pioneers can participate.
     *   **Utility-Driven Value:** By embedding the **Global Consensus Value (GCV)** as a cornerstone of the settlement logic, the protocol actively contributes to establishing Pi's real-world utility, a key goal of the Pi Core Team.
 *   **Identity Layer:** Utilizes **Decentralized Identity (DID)** standards, with the Pi SDK acting as a primary identity provider for verified users.
+
+## 🖥️ Frontend Prototypes
+
+The project includes two frontend prototypes to demonstrate core functionalities:
+
+1. **Main Dashboard (`frontend/index.html`):** Displays active auctions and integrates a 3D shipment tracking panel powered by Leaflet.
+2. **Shared Tracking Link (`frontend/tracking.html`):** A standalone tracking page with a shareable link, designed for customs officers and shipping companies.
+
+### How to Run the Frontend
+Simply open the `index.html` or `tracking.html` files in your browser to explore the user interface and tracking features.
