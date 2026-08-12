@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Sovereign Suppliers Auction Node",
+  "version": "1.0.0",
+  "description": "Procurement and supply chain bidding protocol locked via strict BigInt models and optimized for UNICEF Fund deployment.",
+  "developer": {
+    "name": "mibo01699"
+  },
+  "pi_network": {
+    "app_id": "yemen-suppliers-auction-2026",
+    "sandbox": true,
+    "required_scopes": ["username", "payments"]
+  },
+  "permissions": [
+    "identity",
+    "storage"
+  ]
+}
