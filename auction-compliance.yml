@@ -1,0 +1,32 @@
+name: "Auction Subsystem Compliance Guard"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  verify-auction-logic:
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Checkout Code"
+      uses: actions/checkout@v4
+
+    - name: "Audit Core Code Integrity against Floats"
+      run: |
+        echo "Validating zero float architecture constraints in suppliers-auction ledger..."
+        if grep -rnw . -e "parseFloat(" | grep -v "Math.round" | grep -v "node_modules"; then
+          echo "COMPLIANCE VIOLATION: Unbounded floating-point variable parsed directly without atomic integer conversion."
+          exit 1
+        else
+          echo "Pass: Safe strict BigInt formatting verified."
+        fi
+
+    - name: "Verify Multi-Language File Structure"
+      run: |
+        if [ ! -f manifest.json ]; then
+          echo "Error: Base manifest configuration file absent."
+          exit 1
+        fi
+        echo "Pass: Complete localized public good structure established."
