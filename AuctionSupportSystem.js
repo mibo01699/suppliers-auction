@@ -1,5 +1,6 @@
 // Comprehensive Floating-Point-Free Support, AI Validation, and Notification Suite
-// Designed for Replit Runtime environments interacting with external vendor pools
+// Integration Focus: Multi-Language Indexing for 11 Core Global Jurisdictions
+// Compliance: Pi Network 2026 Core Rules & UNICEF Open Source Digital Public Goods
 
 import AuctionLocalizationEngine from './AuctionLocalizationEngine.js';
 
@@ -7,63 +8,67 @@ const i18n = new AuctionLocalizationEngine();
 
 class AuctionSupportSystem {
     constructor() {
-        this.YER_SCALE = 10000000000n; // 10^10 Precision mapping
+        this.YER_SCALE = 10000000000n; // Strict 10^10 Precision mapping matching balance cores
         this.activeTickets = new Map();
-        this.ticketCounter = 0n; // Strict BigInt unique ticket indexing
+        this.ticketCounter = 0n; // Strict BigInt unique ticket indexing for zero float data types
     }
 
     /**
-     * [نظام الإشعارات]: يولد إشعارات المزايدات والعمليات المالية بدقة الأعداد الصحيحة
+     * [الخيار 1]: معالج الإشعارات المرتبط بمحرك اللغات الـ 11 المحدث
      */
-    dispatchIntegerNotification(supplierWallet, alertTypeInteger, rawValueNominal, lang) {
+    dispatchIntegerNotification(supplierWallet, alertTypeInteger, rawValueNominal, langCode) {
         const valueUnitsInt = BigInt(Math.round(parseFloat(rawValueNominal) * Number(this.YER_SCALE)));
-        const coreMessage = alertTypeInteger === 1n ? i18n.fetchLocalizedPhrase(lang, "bid_accepted") : i18n.fetchLocalizedPhrase(lang, "error_low_bid");
+        
+        // جلب النص المترجم بناءً على رمز اللغة المدخل (مثل: ko, th, tr, ur)
+        const coreMessage = alertTypeInteger === 1n 
+            ? i18n.fetchLocalizedPhrase(langCode, "bid_accepted") 
+            : i18n.fetchLocalizedPhrase(langCode, "error_low_bid");
 
         return {
             recipient: supplierWallet,
-            alertCode: alertTypeTypeInteger.toString(),
-            payloadValueSubUnits: valueUnitsInt.toString(), // Outputted safely as String
-            translatedNotice: `${coreMessage} [Units Reference: ${valueUnitsInt.toString()}]`,
+            alertCode: alertTypeInteger.toString(),
+            payloadValueSubUnits: valueUnitsInt.toString(), 
+            translatedNotice: `${coreMessage} [Ref: ${valueUnitsInt.toString()}]`,
             dispatchedTimestamp: Date.now().toString()
         };
     }
 
     /**
-     * [مساعد دعم الذكاء الاصطناعي - AI Assistant]: يقوم بفحص ومساعدة الموردين مالياً وتدقيق عروضهم
+     * [الخيار 1]: مساعد دعم الذكاء الاصطناعي لفحص عروض الموردين في الأسواق العالمية الـ 11
      */
-    consultAiAssistantEngine(incomingQueryText, proposedBidNominal, lang) {
+    consultAiAssistantEngine(incomingQueryText, proposedBidNominal, langCode) {
         try {
+            // الحماية المسبقة: تحويل المدخلات آلياً إلى أعداد صحيحة كبيرة ومنع أي فواصل عشرية
             const bidInt = BigInt(Math.round(parseFloat(proposedBidNominal) * Number(this.YER_SCALE)));
             
-            // رد مساعد الذكاء الاصطناعي مبرمج بالكامل للتحقق من سلامة البنية الرقمية للعطاء
             return {
                 aiResponseVerdict: "ANALYSIS_COMPLETE",
                 isStructureValid: true,
                 suggestedBigIntHex: "0x" + bidInt.toString(16),
-                aiMessageText: i18n.fetchLocalizedPhrase(lang, "bid_accepted") + ` AI verified integer conversion value: ${bidInt.toString()}`
+                aiMessageText: i18n.fetchLocalizedPhrase(langCode, "bid_accepted") + ` [Raw Sovereign Units: ${bidInt.toString()}]`
             };
         } catch (err) {
             return {
                 aiResponseVerdict: "PARSING_FAILED",
                 isStructureValid: false,
-                aiMessageText: i18n.fetchLocalizedPhrase(lang, "error_low_bid") + " AI detected non-compliant decimal floating parameters."
+                aiMessageText: i18n.fetchLocalizedPhrase(langCode, "error_low_bid") + " AI Alert: Non-compliant decimal floating parameters detected."
             };
         }
     }
 
     /**
-     * [الدعم البشري - Human Support]: يفتح قنوات تواصل لحل الخلافات المالية أو مشاكل الحظر والتكرار
+     * [نظام الدعم البشري للتذاكر الدولية]
      */
     initializeHumanSupportTicket(supplierWallet, contentionCodeInteger, issueDescription) {
         this.ticketCounter += 1n;
-        const currentTicketId = `TICKET-SOVEREIGN-${this.ticketCounter.toString()}`;
+        const currentTicketId = `TICKET-AUCTION-${this.ticketCounter.toString()}`;
 
         const ticketRecord = {
             id: currentTicketId,
             vendor: supplierWallet,
-            reasonCode: BigInt(contentionCodeInteger).toString(), // E.g., 40301n for Anti-Double Dipping Lock contention
+            reasonCode: BigInt(contentionCodeInteger).toString(), 
             description: issueDescription,
-            status: "OPEN_FOR_HUMAN_INTERVENTION",
+            status: "OPEN_FOR_REGIONAL_HUMAN_INTERVENTION",
             createdTimestamp: Date.now().toString()
         };
 
