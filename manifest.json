@@ -1,18 +1,25 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Sovereign Suppliers Auction Node",
-  "version": "1.0.0",
-  "description": "Procurement and supply chain bidding protocol locked via strict BigInt models and optimized for UNICEF Fund deployment.",
-  "developer": {
-    "name": "mibo01699"
-  },
-  "pi_network": {
-    "app_id": "yemen-suppliers-auction-2026",
-    "sandbox": true,
-    "required_scopes": ["username", "payments"]
-  },
+  "short_name": "SuppliersAuction",
+  "description": "A decentralized reverse-auction and procurement protocol enabling flexible Pi GCV settlement for conflict-affected economies.",
+  "version": "2.0.0",
+  "app_url": "https://repl.co",
+  "sandbox_url": "https://minepi.com",
+  "icon": "assets/icons/app-logo.png",
   "permissions": [
-    "identity",
-    "storage"
-  ]
+    "username",
+    "wallet_address",
+    "biometrics"
+  ],
+  "categories": [
+    "utilities",
+    "ecosystem_app"
+  ],
+  "pi_network_config": {
+    "protocol_version": "26",
+    "required_sdk": "js-v2",
+    "enforce_kyc": true,
+    "blockchain": "Mainnet-Open-Ready"
+  }
 }
