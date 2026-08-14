@@ -1,37 +1,52 @@
-// hybrid_payment_contract.rs
-#![no_std]
-use soroban_sdk::{contract, contractimpl, Env, Address, i128, Symbol, Map};
+// hybrid_payment_contract.rs - النسخة المحدثة المتوافقة مع النسب الحرة
+use soroban_sdk::{contract, contractimpl, Env, Address, String};
 
 #[contract]
 pub struct HybridPaymentContract;
 
 #[contractimpl]
 impl HybridPaymentContract {
-    /// تنفيذ الدفع الهجين
-    pub fn settle_payment(
+    /// تنفيذ التسوية الهجينة التوافقية بناءً على نسبة معطاة ديناميكياً
+    /// total_amount: القيمة الإجمالية للعطاء مقومة بالوحدات الصغرى للعملة المحلية (10^10)
+    /// gcv_rate: سعر صرف الـ Pi المتوافق عليه بقيمة GCV مقوم بالعملة المحلية
+    /// pi_ratio_percentage: النسبة التوافقية المقبولة لـ Pi (0 - 100)
+    pub fn settle_hybrid_deal(
         env: Env,
         buyer: Address,
         seller: Address,
         total_amount: i128,
-        pi_amount: i128,    // المبلغ المحسوب بـ Pi بناءً على GCV
-        yer_amount: i128,   // المبلغ المحسوب بـ YER
-        auction_id: u64,
-    ) {
-        // 1. التحقق من هويات المشتري والبائع (KYC) - يتم افتراضه من قبل المتصل
-        // 2. بدء عملية الدفع (معالجة ذرية):
-        //    أ. تحويل Pi عبر عقد Pi (يتطلب استدعاء عقد آخر أو SDK)
-        //    ب. تحويل YER عبر عقد YER (من مستودع BIGISH-YER)
-        // 3. في حال فشل أحد التحويلين، إلغاء الكل (Revert)
-        // 4. تسجيل عملية الدفع في الدفتر وإنشاء حدث لبدء التتبع (Track)
+        gcv_rate: i128,
+        pi_ratio_percentage: u32,
+    ) -> (i128, i128) {
+        // 1. التحقق الصارم من صحة النسبة المئوية المتفق عليها
+        if pi_ratio_percentage > 100 {
+            panic!("Invalid percentage. Must be between 0 and 100.");
+        }
+
+        let ratio = pi_ratio_percentage as i128;
+        let hundred = 100_i128;
+
+        // 2. حساب حصة العملة المحلية المستقرة YER بناءً على النسبة التوافقية
+        let yer_share = (total_amount * (hundred - ratio)) / hundred;
         
-        // محاكاة منطق الدفع (سيتم استبداله بالتكامل الفعلي)
-        // self.transfer_pi(buyer, seller, pi_amount);
-        // self.transfer_yer(buyer, seller, yer_amount);
-        
-        // تسجيل الحدث
+        // 3. حساب حصة الـ Pi المستهدفة (منع ثغرات التقريب بالتفاضل الجبري)
+        let pi_share_in_currency = total_amount - yer_share;
+
+        // 4. تحويل حصة العملة المقومة بالـ Pi إلى وحدات صغرى للبلوكشين (Stroops = 10^7)
+        let pi_precision_multiplier = 10_000_000_i128;
+        let mut required_pi_stroops = 0_i128;
+
+        if pi_share_in_currency > 0 && gcv_rate > 0 {
+            required_pi_stroops = (pi_share_in_currency * pi_precision_multiplier) / gcv_rate;
+        }
+
+        // 5. إطلاق أحداث التوثيق على البلوكشين (Events) لإخطار الـ SDK وخوادم المقاصة
         env.events().publish(
-            Symbol::new(&env, "payment_settled"),
-            &(auction_id, buyer, seller, pi_amount, yer_amount)
+            (String::from_str(&env, "payment_settled"), buyer, seller),
+            (yer_share, required_pi_stroops, ratio),
         );
+
+        // إرجاع مخرجات التسوية (المبلغ بالعملة المحلية، المبلغ بوحدات الـ Pi Stroops)
+        (yer_share, required_pi_stroops)
     }
 }
