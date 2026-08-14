@@ -1,0 +1,5 @@
+"scripts": {
+  "start": "node server.js",
+  "test-env": "node test-suite-engine.js",
+  "test": "chmod +x verify-compliance.sh && ./verify-compliance.sh"
+}
