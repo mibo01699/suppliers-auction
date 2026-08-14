@@ -1,85 +1,52 @@
-// Auction Router - REST API Interface for Replit Runtime Environment
-// Integrates communication endpoints with the main clearing house repository
-
-import express from 'express';
-import SovereignAuctionEngine from './SovereignAuctionEngine.js';
-
+// auction-router.js - النسخة المحدثة لدعم المزادات ذات النسب التوافقية الحرة
+const express = require('express');
 const router = express.Router();
-const auctionEngine = new SovereignAuctionEngine();
+const axios = require('axios'); // لتمرير البيانات المباشرة للمقاصة المالية
 
-// Target URL pointing to the main wallet app server during local Replit testing
-const BIGISH_YER_CORE_URL = "http://localhost:3000"; 
-
-/**
- * Endpoint for suppliers to post automated bids
- * POST /api/auction/bid
- */
-router.post('/api/auction/bid', (req, res) => {
-    const { auctionId, supplierWallet, rawBidAmountNominal, currentHighestBidSubUnits } = req.body;
-    
+router.post('/api/payment/settle', async (req, res) => {
     try {
-        const validatedBidResult = auctionEngine.submitSupplierBid(
+        const { 
             auctionId, 
-            supplierWallet, 
-            rawBidAmountNominal, 
-            currentHighestBidSubUnits
-        );
+            buyerPiWallet, 
+            sellerPiWallet, 
+            buyerYerWalletId, 
+            sellerYerWalletId, 
+            totalAmount,          // القيمة الإجمالية للعطاء بالوحدات الصغرى للعملة المحلية
+            customGcvRate,        // سعر صرف الـ Pi المتوافق عليه بناءً على الـ GCV مقوم بالعملة المحلية
+            piRatioPercentage    // النسبة المئوية المخصصة لـ Pi المتفق عليها بين الطرفين (0 - 100)
+        } = req.body;
 
-        res.status(200).json({
-            success: true,
-            message: "Bid accepted into repository state machine.",
-            data: validatedBidResult
-        });
-    } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
-    }
-});
-
-/**
- * Endpoint triggered when an auction closes to request hybrid payment processing from BIGISH-YER
- * POST /api/auction/finalize
- */
-router.post('/api/auction/finalize', async (req, res) => {
-    const { auctionId, winningVendorWallet, winningBidNominal, vendorUsername } = req.body;
-
-    try {
-        // Request the main repository clearing infrastructure to calculate the 50% GCV Pi / 50% YER Split
-        const response = await fetch(`${BIGISH_YER_CORE_URL}/api/clearing/settle-auction`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                auctionId: auctionId,
-                totalBidNominal: winningBidNominal,
-                vendorWallet: winningVendorWallet,
-                vendorUsername: vendorUsername,
-                isCoreKycApproved: true, // Derived from front-end Pi Auth Session
-                registeredOwnerUsername: vendorUsername
-            })
-        });
-
-        const clearingPayload = await response.json();
-
-        if (!clearingPayload.success) {
-            return res.status(400).json({
-                success: false,
-                message: "Clearing house rejection from main BIGISH-YER infrastructure.",
-                error: clearingPayload.message
-            });
+        // التحقق الأساسي من النسبة قبل الترحيل المالي
+        const ratio = parseInt(piRatioPercentage, 10);
+        if (isNaN(ratio) || ratio < 0 || ratio > 100) {
+            return res.status(400).json({ success: false, error: "Invalid Pi ratio percentage. Must be 0-100." });
         }
 
-        res.status(200).json({
+        // تحضير الحمولة البرمجية لإرسالها لمركز المقاصة المشترك BIGISH-YER
+        const clearingPayload = {
+            auctionId: auctionId,
+            totalBidInYCOIN: totalAmount.toString(), 
+            gcvPiRateInYCOIN: customGcvRate.toString(),
+            piRatioPercentage: ratio
+        };
+
+        // التوجيه التلقائي لخادم المقاصة المحدث
+        const bigishYerApiUrl = process.env.BIGISH_YER_API || 'http://localhost:3000';
+        const response = await axios.post(`${bigishYerApiUrl}/api/settle-auction-deal`, clearingPayload);
+
+        // إرجاع خطة التسوية المعتمدة لنقطة المزاد لبدء توقيع الـ SDK مستقبلاً
+        return res.status(200).json({
             success: true,
-            message: "Auction finalized. Dual token allocation settlement compiled.",
-            settlementData: clearingPayload.payload
+            message: "Auction finalized with mutually agreed custom ratios.",
+            clearingDetails: response.data
         });
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Failed to establish secure communications with BIGISH-YER core node server.",
-            error: error.message
+        return res.status(500).json({ 
+            success: false, 
+            error: "Clearing connection failed or " + error.message 
         });
     }
 });
 
-export default router;
+module.exports = router;
