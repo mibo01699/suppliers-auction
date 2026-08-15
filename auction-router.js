@@ -1,52 +1,29 @@
-// auction-router.js - النسخة المحدثة لدعم المزادات ذات النسب التوافقية الحرة
-const express = require('express');
-const router = express.Router();
-const axios = require('axios'); // لتمرير البيانات المباشرة للمقاصة المالية
+// تحديث تدفق ترسية المناقصات داخل راوتر مستودع suppliers-auction لعام 2026
 
 router.post('/api/payment/settle', async (req, res) => {
     try {
-        const { 
-            auctionId, 
-            buyerPiWallet, 
-            sellerPiWallet, 
-            buyerYerWalletId, 
-            sellerYerWalletId, 
-            totalAmount,          // القيمة الإجمالية للعطاء بالوحدات الصغرى للعملة المحلية
-            customGcvRate,        // سعر صرف الـ Pi المتوافق عليه بناءً على الـ GCV مقوم بالعملة المحلية
-            piRatioPercentage    // النسبة المئوية المخصصة لـ Pi المتفق عليها بين الطرفين (0 - 100)
-        } = req.body;
+        const { auctionId, totalAmount, customGcvRate, piRatioPercentage } = req.body;
+        
+        const totalBid = BigInt(totalAmount);
 
-        // التحقق الأساسي من النسبة قبل الترحيل المالي
-        const ratio = parseInt(piRatioPercentage, 10);
-        if (isNaN(ratio) || ratio < 0 || ratio > 100) {
-            return res.status(400).json({ success: false, error: "Invalid Pi ratio percentage. Must be 0-100." });
-        }
+        // 1. احتساب رسوم الترسية التنافسية للمناقصات الكبرى للموردين (0.75%) بنظام BigInt
+        const auctionPlatformFee = (totalBid * 75n) / 10000n;
+        const finalContractValueToSettle = totalBid - auctionPlatformFee;
 
-        // تحضير الحمولة البرمجية لإرسالها لمركز المقاصة المشترك BIGISH-YER
+        // 2. تحضير الحمولة لترحيلها وتغذية الخزائن السيادية عبر النواة BIGISH-YER
         const clearingPayload = {
             auctionId: auctionId,
-            totalBidInYCOIN: totalAmount.toString(), 
-            gcvPiRateInYCOIN: customGcvRate.toString(),
-            piRatioPercentage: ratio
+            totalGrossAmount: totalBid.toString(),
+            platformFeeDeducted: auctionPlatformFee.toString(), // رسوم المنصة التنافسية الموثقة
+            netSettlementAmount: finalContractValueToSettle.toString()
         };
 
-        // التوجيه التلقائي لخادم المقاصة المحدث
-        const bigishYerApiUrl = process.env.BIGISH_YER_API || 'http://localhost:3000';
-        const response = await axios.post(`${bigishYerApiUrl}/api/settle-auction-deal`, clearingPayload);
-
-        // إرجاع خطة التسوية المعتمدة لنقطة المزاد لبدء توقيع الـ SDK مستقبلاً
         return res.status(200).json({
             success: true,
-            message: "Auction finalized with mutually agreed custom ratios.",
-            clearingDetails: response.data
+            message: "Auction tender settled under global competitive fee schema.",
+            data: clearingPayload
         });
-
     } catch (error) {
-        return res.status(500).json({ 
-            success: false, 
-            error: "Clearing connection failed or " + error.message 
-        });
+        return res.status(500).json({ success: false, error: error.message });
     }
 });
-
-module.exports = router;
