@@ -1,13 +1,11 @@
 // ============================================================
-// الملف: server.js - منصة المزادات اللامركزية (متوافقة مع Vercel)
-// الدور: إدارة المزادات، العطاءات، العقود
+// الملف: server.js - منصة المزادات اللامركزية
 // ============================================================
 
 const express = require('express');
 const cors = require('cors');
 const app = express();
 
-// التفعيلات الأساسية
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -26,38 +24,46 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// الحصول على قائمة المزادات (محاكاة)
+// تخزين مؤقت للمزادات (في الذاكرة)
+let auctions = [
+    { id: '1', title: 'مزاد المواد الغذائية', status: 'active', bids: 5, startingPrice: '1000' },
+    { id: '2', title: 'مزاد المعدات الطبية', status: 'closed', bids: 3, startingPrice: '2000' }
+];
+
+// الحصول على قائمة المزادات
 app.get('/api/auctions', (req, res) => {
     res.json({
         success: true,
-        auctions: [
-            { id: '1', title: 'مزاد المواد الغذائية', status: 'active', bids: 5 },
-            { id: '2', title: 'مزاد المعدات الطبية', status: 'closed', bids: 3 }
-        ]
+        auctions
     });
 });
 
-// إنشاء مزاد جديد (محاكاة)
+// إنشاء مزاد جديد
 app.post('/api/auctions/create', (req, res) => {
     const { title, description, startingPrice } = req.body;
     if (!title || !startingPrice) {
         return res.status(400).json({ error: 'العنوان والسعر الابتدائي مطلوبان' });
     }
 
+    const newAuction = {
+        id: Date.now().toString(),
+        title,
+        description: description || '',
+        startingPrice,
+        status: 'active',
+        bids: 0,
+        createdAt: new Date().toISOString()
+    };
+
+    auctions.push(newAuction);
+
     res.json({
         success: true,
-        auction: {
-            id: Date.now().toString(),
-            title,
-            description: description || '',
-            startingPrice: startingPrice,
-            status: 'active',
-            createdAt: new Date().toISOString()
-        }
+        auction: newAuction
     });
 });
 
-// تقديم عرض (محاكاة)
+// تقديم عرض
 app.post('/api/auctions/:id/bid', (req, res) => {
     const { id } = req.params;
     const { amount, bidder } = req.body;
@@ -65,6 +71,17 @@ app.post('/api/auctions/:id/bid', (req, res) => {
     if (!amount || !bidder) {
         return res.status(400).json({ error: 'المبلغ ومقدم العرض مطلوبان' });
     }
+
+    const auction = auctions.find(a => a.id === id);
+    if (!auction) {
+        return res.status(404).json({ error: 'المزاد غير موجود' });
+    }
+
+    if (auction.status !== 'active') {
+        return res.status(400).json({ error: 'المزاد غير نشط' });
+    }
+
+    auction.bids += 1;
 
     res.json({
         success: true,
