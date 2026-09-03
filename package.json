@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "build": "exit 0",
-    "test": "jest --runInBand",
-    "lint": "echo 'No linter configured' && exit 0"
+    "test": "jest",
+    "lint": "echo 'No linter configured'"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -22,6 +22,7 @@
   },
   "jest": {
     "testMatch": ["<rootDir>/tests/**/*.test.js"],
-    "testPathIgnorePatterns": ["/node_modules/"]
+    "testPathIgnorePatterns": ["/node_modules/"],
+    "collectCoverage": false
   }
 }
