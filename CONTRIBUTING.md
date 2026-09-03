@@ -1,50 +1,47 @@
-# Contributing to Global Auction Protocol (GAP)
+# Contributing to suppliers-auction
 
-First off, thank you for considering contributing to GAP! Your help is essential to make this project a robust and impactful public good.
+**Version:** 1.0.0 (Sandbox/Testnet)
 
-## Code of Conduct
+> **⚠️ Important:** This is a **sandbox/testnet-only prototype**.  
+> It does **NOT** claim official certification or funding from any organization.
 
-This project and everyone participating in it is governed by the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/). By participating, you are expected to uphold this code.
+---
 
-## How Can I Contribute?
+## 🧭 How to Contribute
 
-### Reporting Bugs
+We welcome contributions from developers, researchers, and community members. All contributions must align with the project's core principles:
 
-- **Ensure the bug was not already reported** by searching on GitHub under [Issues](https://github.com/mibo01699/suppliers-auction/issues).
-- If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/mibo01699/suppliers-auction/issues/new). Be sure to include a **clear title and description**, as much relevant information as possible, and a **code sample** or an **executable test case** demonstrating the expected behavior that is not occurring.
+- **Open Source:** All code is publicly available under the MIT License.
+- **Utility First:** Solutions must deliver real-world value.
+- **Community Driven:** Powered by youth and women from diverse backgrounds.
+- **Scientific Rigor:** Every change must be grounded in sound engineering.
 
-### Suggesting Enhancements
+---
 
-- Open a new issue with a clear title and a detailed description of the suggested enhancement.
-- Explain why this enhancement would be useful to the project and the community.
+## 📋 Steps to Contribute
 
-### Your First Code Contribution
+| Step | Action |
+|------|--------|
+| **1** | Fork the repository on GitHub. |
+| **2** | Create a new branch for your feature (`feature/your-feature`). |
+| **3** | Make your changes, ensuring they follow the code style. |
+| **4** | Write tests for your changes (if applicable). |
+| **5** | Submit a Pull Request (PR) with a clear description. |
 
-1.  **Fork the repository** and create your branch from `main`.
-2.  If you've added code that should be tested, add tests.
-3.  Ensure the test suite passes.
-4.  Issue that pull request!
+---
 
-### Pull Requests
+## 🔒 Code Guidelines
 
-- Fill in the required template.
-- Do not include issue numbers in the PR title.
-- Include screenshots and animated GIFs in your pull request whenever possible.
-- Follow the existing code style.
+- **No Floating-Point:** Use `BigInt` for all financial calculations.
+- **No Hardcoded Secrets:** All secrets must reside in `.env`.
+- **No Advertisements:** Do not include promotional content.
 
-## Styleguides
+---
 
-### Git Commit Messages
+## 📬 Contact
 
-- Use the present tense ("Add feature" not "Added feature").
-- Use the imperative mood ("Move cursor to..." not "Moves cursor to...").
-- Limit the first line to 72 characters or less.
-- Reference issues and pull requests liberally after the first line.
+- **GitHub:** [mibo01699](https://github.com/mibo01699)
 
-### JavaScript/TypeScript Style
+---
 
-- Use `const` for variables that don't change.
-- Use semicolons.
-- Use 2 spaces for indentation.
-
-Thank you for your contribution! 🚀
+**🦅 Developed by Arabian Eagle Technology Group (A.E.C.)**
