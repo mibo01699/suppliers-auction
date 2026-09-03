@@ -34,4 +34,12 @@ describe('Auction API Tests', () => {
         expect(response.body.success).toBe(true);
         expect(response.body.bid.amount).toBe('1500');
     });
+
+    test('POST /api/auctions/:id/bid should fail for invalid auction', async () => {
+        const response = await request(app)
+            .post('/api/auctions/999/bid')
+            .send({ amount: '1500', bidder: 'Test Bidder' });
+        expect(response.status).toBe(404);
+        expect(response.body.error).toBe('المزاد غير موجود');
+    });
 });
