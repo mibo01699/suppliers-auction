@@ -1,25 +1,21 @@
 {
-  "manifest_version": 2,
-  "name": "Sovereign Suppliers Auction Node",
-  "short_name": "SuppliersAuction",
-  "description": "A decentralized reverse-auction and procurement protocol enabling flexible Pi GCV settlement for conflict-affected economies.",
-  "version": "2.0.0",
-  "app_url": "https://repl.co",
-  "sandbox_url": "https://minepi.com",
-  "icon": "assets/icons/app-logo.png",
-  "permissions": [
-    "username",
-    "wallet_address",
-    "biometrics"
-  ],
-  "categories": [
-    "utilities",
-    "ecosystem_app"
-  ],
-  "pi_network_config": {
-    "protocol_version": "26",
-    "required_sdk": "js-v2",
-    "enforce_kyc": true,
-    "blockchain": "Mainnet-Open-Ready"
-  }
+  "name": "suppliers-auction",
+  "short_name": "SAuction",
+  "description": "منصة المزادات اللامركزية (بيئة اختبار)",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#e5a93c",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
