@@ -1,69 +1,26 @@
-// Universal Multi-Language Translation and Localization Engine
-// Optimized for East Asia, Middle East, and Global Core Hubs
-// Strictly manages language indexing keys using Absolute Integer Mappings (No Floats)
+// AuctionLocalizationEngine.js - محرك الترجمة متعدد اللغات
 
 class AuctionLocalizationEngine {
     constructor() {
-        // Core dictionary supporting exactly the requested language expansion
         this.translations = {
-            "ar": { // العربية
-                bid_accepted: "تم قبول المزايدة بنجاح واستقرار سيادي.", 
-                error_low_bid: "خطأ: قيمة المزاد المدخلة غير كافية برمجياً." 
-            },
-            "en": { // الإنجليزية
-                bid_accepted: "Bid accepted successfully under sovereign ledger guidelines.", 
-                error_low_bid: "Error: The submitted bid does not satisfy minimum increment parameters." 
-            },
-            "zh": { // الصينية (China)
-                bid_accepted: "竞标成功接受，符合主权账本规范。", 
-                error_low_bid: "错误：提交的竞标未达到最低递增参数。" 
-            },
-            "th": { // التايلاندية (Thailand)
-                bid_accepted: "ยอมรับการประมูลสำเร็จภายใต้แนวทางบัญชีแยกประเภทหลัก.", 
-                error_low_bid: "ข้อผิดพลาด: การเสนอราคาที่ส่งมาไม่ตรงตามพารามิเตอร์การเพิ่มขึ้นขั้นต่ำ." 
-            },
-            "tl": { // الفلبينية/التاغالوغ (Philippines)
-                bid_accepted: "Matagumpay na tinanggap ang bid sa ilalim ng mga alituntunin.", 
-                error_low_bid: "Error: Ang isinumiteng bid ay hindi nakakatugon sa minimum na parameter." 
-            },
-            "ms": { // الماليزية (Malaysia)
-                bid_accepted: "Tawaran diterima dengan jaya di bawah garis panduan lejar.", 
-                error_low_bid: "Ralat: Tawaran yang dikemukakan tidak memenuhi parameter kenaikan minimum." 
-            },
-            "tr": { // التركية (Turkey)
-                bid_accepted: "Teklif, egemen defter yönergeleri kapsamında başarıyla kabul edildi.", 
-                error_low_bid: "Hata: Gönderilen teklif minimum artış parametrelerini karşılamıyor." 
-            },
-            "ko": { // الكورية (Korea)
-                bid_accepted: "주권 장부 지침에 따라 입찰이 성공적으로 수락되었습니다.", 
-                error_low_bid: "오류: 제출된 입찰이 최소 증액 매개변수를 충족하지 않습니다." 
-            },
-            "ru": { // الروسية (Russia)
-                bid_accepted: "Ставка успешно принята в соответствии с правилами суверенного реестра.", 
-                error_low_bid: "Ошибка: Поданная ставка не соответствует параметрам минимального шага." 
-            },
-            "hi": { // الهندية (India)
-                bid_accepted: "बोली सफलतापूर्वक स्वीकार कर ली गई है।", 
-                error_low_bid: "त्रुटि: सबमिट की गई बोली न्यूनतम वृद्धि मापदंडों को पूरा नहीं करती है।" 
-            },
-            "ur": { // الباكستانية/الأوردو (Pakistan)
-                bid_accepted: "بولی خودمختار لیجر کے خطوط کے تحت کامیابی سے قبول کر لی گئی ہے۔", 
-                error_low_bid: "غلطی: جمع کرائی گئی بولی کم از کم اضافہ کے معیار پر پوری نہیں اترتی۔" 
-            }
+            "ar": { bid_accepted: "تم قبول المزايدة بنجاح.", error_low_bid: "خطأ: قيمة المزاد غير كافية." },
+            "en": { bid_accepted: "Bid accepted successfully.", error_low_bid: "Error: Bid amount is insufficient." },
+            "zh": { bid_accepted: "竞标成功接受。", error_low_bid: "错误：投标金额不足。" },
+            "th": { bid_accepted: "ยอมรับการประมูลสำเร็จ", error_low_bid: "ข้อผิดพลาด: จำนวนเงินประมูลไม่เพียงพอ" },
+            "tl": { bid_accepted: "Tinanggap ang bid.", error_low_bid: "Error: Hindi sapat ang bid." },
+            "ms": { bid_accepted: "Tawaran diterima.", error_low_bid: "Ralat: Tawaran tidak mencukupi." },
+            "tr": { bid_accepted: "Teklif kabul edildi.", error_low_bid: "Hata: Teklif yetersiz." },
+            "ko": { bid_accepted: "입찰이 수락되었습니다.", error_low_bid: "오류: 입찰 금액이 부족합니다." },
+            "ru": { bid_accepted: "Ставка принята.", error_low_bid: "Ошибка: Ставка недостаточна." },
+            "hi": { bid_accepted: "बोली स्वीकार कर ली गई।", error_low_bid: "त्रुटि: बोली राशि अपर्याप्त है।" },
+            "ur": { bid_accepted: "بولی قبول کر لی گئی۔", error_low_bid: "غلطی: بولی کی رقم ناکافی ہے۔" }
         };
     }
 
-    /**
-     * Localizes operational messages securely via exact integer language indexing
-     * @param {string} languageCode - Target language identifier (e.g., 'zh', 'th', 'tl', 'ms', 'tr', 'ko')
-     * @param {string} baselineKey - Translation context target key
-     * @returns {string} Fully localized string matching regional compliance
-     */
     fetchLocalizedPhrase(languageCode, baselineKey) {
-        // Fallback safely to English ('en') if language is not supported
-        const selectedLang = this.translations[languageCode] ? languageCode : "en";
-        return this.translations[selectedLang][baselineKey] || this.translations["en"][baselineKey];
+        const lang = this.translations[languageCode] ? languageCode : "en";
+        return this.translations[lang][baselineKey] || this.translations["en"][baselineKey];
     }
 }
 
-export default AuctionLocalizationEngine;
+module.exports = AuctionLocalizationEngine;
