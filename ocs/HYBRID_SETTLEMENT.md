@@ -1,47 +1,43 @@
-# Hybrid Settlement Mechanism (Atomic Split Payment)
+# Hybrid Settlement Mechanism (Sandbox/Testnet)
 
-## Core Concept
-In the Global Auction Protocol, a single winning bid triggers an **atomic transaction** that simultaneously debits two distinct wallets from the buyer's account:
+**Version:** 1.0.0
 
-1.  **Pi Wallet:** Debited with a predefined percentage of the total bid amount, calculated based on the agreed **Global Consensus Value (GCV)** at the time of the auction.
-2.  **YER Wallet:** Debited with the remaining percentage of the total bid amount via the `BIGISH-YER` token system.
+> **⚠️ Important:** This is a **sandbox/testnet-only prototype**.  
+> It does **NOT** claim official certification or funding from any organization.
 
-## The Atomic Split Process
-1.  **Auction Finalization:** The smart contract (`Auction.sol`) confirms the winning bid and the agreed price.
-2.  **Split Calculation:** The contract calculates the exact amounts for Pi (based on GCV) and YER, according to the buyer's predefined split ratio.
-3.  **Dual-Trigger Execution:**
+---
 
+## Overview
 
-## 🔗 Technical Integration with Pi Network
+The hybrid settlement mechanism enables atomic payments split between Pi Coin and YER Token within the suppliers-auction platform.
 
-The atomic split settlement is executed through a multi-step process:
+---
 
-1.  **Pre-Auction Verification:**
-    *   Buyer and Supplier are authenticated via **Pi SDK** before creating or bidding.
-    *   The smart contract verifies the buyer's Pi wallet address (via a trusted oracle) to ensure they hold the necessary Pi for the escrow or settlement.
+## Settlement Flow
 
-2.  **Auction Finalization:**
-    *   The `Auction.sol` contract calculates `piAmount` based on the GCV and the agreed split.
+| Step | Description |
+|------|-------------|
+| **1. Auction Finalization** | Winning bid is confirmed. |
+| **2. Split Calculation** | Pi/YER ratio is applied to the total amount. |
+| **3. Pi Transfer** | Pi portion is transferred via Pi Network SDK (simulated). |
+| **4. YER Transfer** | YER portion is transferred via BIGISH-YER API. |
+| **5. Confirmation** | Auction is marked as settled only after both transfers succeed. |
 
-3.  **Triggering the Pi Transfer:**
-    *   The contract emits a specific event (`PiSettlementRequested`).
-    *   A Keeper/Bot (off-chain) monitors these events.
-    *   Using a secure bridge/relay (e.g., LayerZero or a custom Pi-EVM bridge), the Keeper initiates the Pi transfer via the **Pi Network SDK**, sending the Pi from the Buyer’s Pi wallet to the Supplier’s Pi wallet.
-
-4.  **Final Atomic Step:**
-    *   The YER transfer is executed directly on the EVM chain.
-    *   A final event (`AuctionSettled`) is emitted only after both the Pi and YER transfers are confirmed.
-    *   **Pi Payment:** The contract initiates a payment request via the **Pi Network SDK** (using cross-chain messaging or an oracle) to transfer the Pi amount from the buyer's Pi wallet to the supplier's Pi wallet.
-    *   **YER Payment:** Simultaneously, the contract calls the `BIGISH-YER` system's smart contract to transfer the YER amount from the buyer's YER wallet to the supplier's YER wallet.
-4.  **Settlement Confirmation:** The auction is marked as complete only upon confirmation of both transfers.
-
-## Why This Matters
-This atomic split model:
-- **Establishes GCV:** Creates a real-world, transparent record of Pi's value through actual trade.
-- **Enables Stable Settlements:** Uses YER for the stable portion of the payment, protecting suppliers from Pi's volatility.
-- **Drives Ecosystem Utility:** Forces the use of Pi and YER together, integrating the entire `BIGISH-YER` infrastructure.
+---
 
 ## Integration Points
-- **Smart Contract:** `Auction.sol` will contain the logic for split calculation and triggering the dual-payment requests.
-- **Pi Network SDK:** Used to interface with Pi wallets (via bridges or oracles).
-- **BIGISH-YER API/SDK:** Used to interface with the YER token system.
+
+- **Pi Network SDK:** Simulated for sandbox testing.
+- **BIGISH-YER API:** Used for YER token transfers.
+
+---
+
+## Security Considerations
+
+- All calculations use `BigInt` to prevent floating-point errors.
+- No private keys are handled by the server.
+- All operations are validated on the server side.
+
+---
+
+**🦅 Developed by Arabian Eagle Technology Group (A.E.C.)**
