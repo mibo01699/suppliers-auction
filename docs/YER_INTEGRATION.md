@@ -44,3 +44,16 @@ contract Auction {
         // ... (trigger Pi transfer) ...
     }
 }
+```
+
+---
+
+4. Security Considerations
+
+· All financial calculations must use BigInt to prevent floating-point errors.
+· No private keys or sensitive data should be stored in the codebase.
+· All sensitive operations must be validated on the server side.
+
+---
+
+🦅 Developed by Arabian Eagle Technology Group (A.E.C.)
