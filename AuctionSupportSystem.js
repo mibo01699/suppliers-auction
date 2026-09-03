@@ -1,80 +1,67 @@
-// Comprehensive Floating-Point-Free Support, AI Validation, and Notification Suite
-// Integration Focus: Multi-Language Indexing for 11 Core Global Jurisdictions
-// Compliance: Pi Network 2026 Core Rules & UNICEF Open Source Digital Public Goods
+// AuctionSupportSystem.js - نظام دعم المزادات
 
-import AuctionLocalizationEngine from './AuctionLocalizationEngine.js';
-
-const i18n = new AuctionLocalizationEngine();
+const AuctionLocalizationEngine = require('./AuctionLocalizationEngine');
 
 class AuctionSupportSystem {
     constructor() {
-        this.YER_SCALE = 10000000000n; // Strict 10^10 Precision mapping matching balance cores
-        this.activeTickets = new Map();
-        this.ticketCounter = 0n; // Strict BigInt unique ticket indexing for zero float data types
+        this.YER_SCALE = 10000000000n;
+        this.i18n = new AuctionLocalizationEngine();
+        this.tickets = new Map();
+        this.ticketCounter = 0n;
     }
 
     /**
-     * [الخيار 1]: معالج الإشعارات المرتبط بمحرك اللغات الـ 11 المحدث
+     * إرسال إشعار للمورد
      */
-    dispatchIntegerNotification(supplierWallet, alertTypeInteger, rawValueNominal, langCode) {
-        const valueUnitsInt = BigInt(Math.round(parseFloat(rawValueNominal) * Number(this.YER_SCALE)));
-        
-        // جلب النص المترجم بناءً على رمز اللغة المدخل (مثل: ko, th, tr, ur)
-        const coreMessage = alertTypeInteger === 1n 
-            ? i18n.fetchLocalizedPhrase(langCode, "bid_accepted") 
-            : i18n.fetchLocalizedPhrase(langCode, "error_low_bid");
+    dispatchNotification(supplierWallet, alertType, value, langCode = 'en') {
+        const valueInt = BigInt(value) * this.YER_SCALE;
+        const message = this.i18n.fetchLocalizedPhrase(langCode, alertType === 1 ? 'bid_accepted' : 'error_low_bid');
 
         return {
             recipient: supplierWallet,
-            alertCode: alertTypeInteger.toString(),
-            payloadValueSubUnits: valueUnitsInt.toString(), 
-            translatedNotice: `${coreMessage} [Ref: ${valueUnitsInt.toString()}]`,
-            dispatchedTimestamp: Date.now().toString()
+            alertCode: alertType.toString(),
+            payload: valueInt.toString(),
+            message: `${message} [Ref: ${valueInt.toString()}]`
         };
     }
 
     /**
-     * [الخيار 1]: مساعد دعم الذكاء الاصطناعي لفحص عروض الموردين في الأسواق العالمية الـ 11
+     * استشارة مساعد الذكاء الاصطناعي
      */
-    consultAiAssistantEngine(incomingQueryText, proposedBidNominal, langCode) {
+    consultAI(query, bidAmount, langCode = 'en') {
         try {
-            // الحماية المسبقة: تحويل المدخلات آلياً إلى أعداد صحيحة كبيرة ومنع أي فواصل عشرية
-            const bidInt = BigInt(Math.round(parseFloat(proposedBidNominal) * Number(this.YER_SCALE)));
-            
+            const bidInt = BigInt(bidAmount) * this.YER_SCALE;
             return {
-                aiResponseVerdict: "ANALYSIS_COMPLETE",
-                isStructureValid: true,
-                suggestedBigIntHex: "0x" + bidInt.toString(16),
-                aiMessageText: i18n.fetchLocalizedPhrase(langCode, "bid_accepted") + ` [Raw Sovereign Units: ${bidInt.toString()}]`
+                verdict: 'ANALYSIS_COMPLETE',
+                valid: true,
+                message: this.i18n.fetchLocalizedPhrase(langCode, 'bid_accepted') + ` [${bidInt.toString()}]`
             };
         } catch (err) {
             return {
-                aiResponseVerdict: "PARSING_FAILED",
-                isStructureValid: false,
-                aiMessageText: i18n.fetchLocalizedPhrase(langCode, "error_low_bid") + " AI Alert: Non-compliant decimal floating parameters detected."
+                verdict: 'PARSING_FAILED',
+                valid: false,
+                message: this.i18n.fetchLocalizedPhrase(langCode, 'error_low_bid')
             };
         }
     }
 
     /**
-     * [نظام الدعم البشري للتذاكر الدولية]
+     * إنشاء تذكرة دعم
      */
-    initializeHumanSupportTicket(supplierWallet, contentionCodeInteger, issueDescription) {
+    createTicket(supplierWallet, reasonCode, description) {
         this.ticketCounter += 1n;
-        const currentTicketId = `TICKET-AUCTION-${this.ticketCounter.toString()}`;
-
-        const ticketRecord = {
-            id: currentTicketId,
+        const id = `TICKET-${this.ticketCounter.toString()}`;
+        const ticket = {
+            id,
             vendor: supplierWallet,
-            reasonCode: BigInt(contentionCodeInteger).toString(), 
-            description: issueDescription,
-            status: "OPEN_FOR_REGIONAL_HUMAN_INTERVENTION",
-            createdTimestamp: Date.now().toString()
+            reason: reasonCode,
+            description,
+            status: 'OPEN',
+            created: Date.now().toString()
         };
-
-        this.activeTickets.set(currentTicketId, ticketRecord);
-        return ticketRecord;
+        this.tickets.set(id, ticket);
+        return ticket;
     }
 }
 
-export default AuctionSupportSystem;
+module.exports = AuctionSupportSystem;
