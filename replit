@@ -1,5 +1,8 @@
-run = "node server.js"
+run = "npm start"
 entrypoint = "server.js"
 
 [packager]
 language = "nodejs"
+
+[env]
+NODE_ENV = "development"
